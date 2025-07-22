@@ -4,23 +4,28 @@ namespace App\Http\Controllers\Api\Dashboard;
 
 use App\Helpers\ApiResponse;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Dashboard\BannerResource;
 use App\Models\Banner;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use App\Traits\UploadImageTrait;
+
 
 class BannerController extends Controller
 {
+    use UploadImageTrait;
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $panner = Banner::with('product')->get();
-        if (!$panner) {
+        $banner = Banner::with('product')->get();
+        if (!$banner) {
 
             return ApiResponse::sendResponse(400, 'no banners found', []);
         }
-        return ApiResponse::sendResponse(200, 'all banners retrieved', $panner);
+        return ApiResponse::sendResponse(200, 'all banners retrieved', BannerResource::collection($banner));
     }
 
     /**
@@ -38,23 +43,20 @@ class BannerController extends Controller
         }
         if ($request->hasFile('image')) {
             $file = $request->file('image');
-            $name = $request->file('image')->getClientOriginalName();
-            // $file = Image::read($file);
-            // $resizedImage = $file->scale(height: 300, width: 248);
-            $image_name = uniqid() . $name;
-            $storing = $file->move(public_path('dashboard/assets/images/banner'), $image_name);
-            $image = $storing->getFilename();
+            $image_name = uniqid() . '_' . $file->getClientOriginalName();
+
+            $this->uploadImage($file, 'dashboard/assets/images/banner/', $image_name, 1920,800);
+        } else {
+            return ApiResponse::sendResponse(422,  'There is no image uploaded', []);
         }
         // dd($image);
-        if ($image) {
-            $banner = Banner::create([
-                'image' => $image,
-                'product_id' => $request->product_id,
 
-            ]);
-            return ApiResponse::sendResponse(200, 'the banner created successfully', $banner);
-        } else
-            return ApiResponse::sendResponse(400, 'no image found',[]);
+        $banner = Banner::create([
+            'image' => $image_name,
+            'product_id' => $request->product_id,
+
+        ]);
+        return ApiResponse::sendResponse(200, 'the banner created successfully', new BannerResource($banner));
     }
 
     /**
@@ -80,19 +82,20 @@ class BannerController extends Controller
         }
         if ($request->hasFile('image')) {
             $file = $request->file('image');
-            $name = $request->file('image')->getClientOriginalName();
-            // $file = Image::read($file);
-            // $resizedImage = $file->scale(height: 300, width: 248);
-            $image_name = uniqid() . $name;
-            $storing = $file->move(public_path('dashboard/assets/images/banner'), $image_name);
-            $image = $storing->getFilename();
+            $image_name = uniqid() . '_' . $file->getClientOriginalName();
+
+            $this->uploadImage($file, 'dashboard/assets/images/banner/', $image_name,  1920,800);
         }
+        if ($banner->image) {
+            $this->deleteImage('dashboard/assets/images/banner/', $banner->image);
+        }
+
         $banner->update([
-            'image' => $image,
+            'image' => $image_name,
             'product_id' => $request->product_id,
 
         ]);
-        return ApiResponse::sendResponse(200, 'the banner updated successfully', $banner);
+        return ApiResponse::sendResponse(200, 'the banner updated successfully', new BannerResource($banner));
     }
 
     /**
@@ -101,10 +104,7 @@ class BannerController extends Controller
     public function destroy(Banner $banner)
     {
         if ($banner->image) {
-            $imagePath = public_path('dashboard/assets/images/banners/' . $banner->image);
-            if (file_exists($imagePath)) {
-                unlink($imagePath);
-            }
+            $this->deleteImage('dashboard/assets/images/banner/', $banner->image);
         }
         $deleted = $banner->delete();
 

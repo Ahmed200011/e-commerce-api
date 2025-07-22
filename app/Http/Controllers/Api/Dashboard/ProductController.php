@@ -51,7 +51,7 @@ class ProductController extends Controller
             $image_name = uniqid() . '_' . $file->getClientOriginalName();
 
             $this->uploadImage($file, 'dashboard/assets/images/products/cards/', $image_name, 600, 600,);
-            $this->uploadImage($file, 'dashboard/assets/images/products/details/', $image_name, 1000, 800,);
+            $this->uploadImage($file, 'dashboard/assets/images/products/details/', $image_name, 800, 1000);
         } else {
             return ApiResponse::sendResponse(422,  'There is no image uploaded', []);
         }
@@ -91,7 +91,7 @@ class ProductController extends Controller
             $image_name = uniqid() . '_' . $file->getClientOriginalName();
 
             $this->uploadImage($file, 'dashboard/assets/images/products/cards/', $image_name, 600, 600,);
-            $this->uploadImage($file, 'dashboard/assets/images/products/details/', $image_name, 1000, 800,);
+            $this->uploadImage($file, 'dashboard/assets/images/products/details/', $image_name, 800, 1000);
         } else {
             return ApiResponse::sendResponse(422,  'There is no image uploaded', []);
         }
