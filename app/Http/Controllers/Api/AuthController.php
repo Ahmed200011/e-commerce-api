@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 
+use App\Events\SendMailEvent;
 use App\Helpers\ApiResponse;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\RegisterRequest;
@@ -28,6 +29,7 @@ class AuthController extends Controller
         }
         $user['token_name'] = 'register_token';
 
+
         return ApiResponse::sendResponse(201, 'User registered successfully', new UserResource($user));
     }
     public function login(Request $request)
@@ -40,6 +42,11 @@ class AuthController extends Controller
         if (Auth::attempt($credentials)) {
             $user = Auth::user();
             $user['token_name'] = 'login_token';
+
+            if($user){
+                // dd(Auth::user()->id);
+            event(new SendMailEvent( $user));
+        }
             return ApiResponse::sendResponse(200, 'Login success', new UserResource($user));
             // dd($user);
         } else {
