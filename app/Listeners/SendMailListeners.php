@@ -3,8 +3,10 @@
 namespace App\Listeners;
 
 use App\Events\SendMailEvent;
+use App\Mail\WelcomeMail;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Support\Facades\Mail;
 
 class SendMailListeners
 {
@@ -21,6 +23,6 @@ class SendMailListeners
      */
     public function handle(SendMailEvent $event): void
     {
-        // dd('from listeners '.$event->user->name);
+        Mail::to($event->user->email)->send(new WelcomeMail($event->user));
     }
 }

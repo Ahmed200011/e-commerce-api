@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\Dashboard;
 use App\Helpers\ApiResponse;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Dashboard\CategoryResource;
+use App\Http\Resources\Dashboard\ProductResource;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -16,7 +17,7 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $data = Category::with(['parent', 'children','products'])->get();
+        $data = Category::with(['parent', 'children', 'products'])->get();
         if (!$data) {
 
             return ApiResponse::sendResponse(400, 'the category not found', []);
@@ -49,7 +50,7 @@ class CategoryController extends Controller
      */
     public function show(Category $category)
     {
-        //
+       
     }
 
     /**
@@ -57,7 +58,8 @@ class CategoryController extends Controller
      */
     public function update(Request $request, Category $category)
     {
-         $validate = Validator::make($request->all(), [
+        // dd($request->all());
+        $validate = Validator::make($request->all(), [
             'category_name' => 'required|string|max:255',
             'parent_id' => 'nullable|exists:categories,id',
         ]);
@@ -76,8 +78,12 @@ class CategoryController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Category $category)
+    public function destroy($id)
     {
+        $category = Category::find($id);
+        if (!$category) {
+            return ApiResponse::sendResponse(404, 'the category not found', []);
+        }
         $deleted = $category->delete();
 
         if ($deleted) {

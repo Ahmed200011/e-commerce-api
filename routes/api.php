@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\Dashboard\BannerController;
 use App\Http\Controllers\Api\Dashboard\CategoryController;
+use App\Http\Controllers\Api\ecommerce\ContactController;
 use App\Http\Controllers\Api\ecommerce\HomeController;
 use App\Http\Controllers\Api\Dashboard\ProductController;
 use App\Http\Controllers\Api\Dashboard\UserController;
@@ -25,10 +26,13 @@ Route::prefix('dashboard')->middleware(['auth:sanctum', 'role:admin'])->group(fu
     Route::apiResource('/banner', BannerController::class);
 });
 
-Route::prefix('e-commerce')->group(function () {
-    Route::get('/home', [ HomeController::class,'index']);
-    Route::post('/contact_us', [ HomeController::class,'contactUs'])->middleware('auth:sanctum');
+Route::prefix('e_commerce')->group(function () {
+    Route::controller(HomeController::class)->group(function () {
+        Route::get('/home', 'index');
+        Route::get('/banner/{id}', 'bannerShowDetails');
+        Route::get('/product/{id}', 'productShowDetails');
+        Route::get('/category/{id}', 'categoryShowDetails');
+    });
 
+    Route::post('/contact_us', [ContactController::class, 'contactUs']);
 });
-
-

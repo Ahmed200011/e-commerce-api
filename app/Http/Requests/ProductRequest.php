@@ -29,7 +29,7 @@ class ProductRequest extends FormRequest
             'price' => 'required|numeric',
             'description' => 'required|string',
             'category_id' => 'exists:categories,id',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:10048',
         ];
     }
      public function failedValidation(Validator $validator){

@@ -30,6 +30,10 @@ class AuthController extends Controller
         $user['token_name'] = 'register_token';
 
 
+        if($user){
+            // dd(Auth::user()->id);
+        event(new SendMailEvent( $user));
+    }
         return ApiResponse::sendResponse(201, 'User registered successfully', new UserResource($user));
     }
     public function login(Request $request)
@@ -43,10 +47,6 @@ class AuthController extends Controller
             $user = Auth::user();
             $user['token_name'] = 'login_token';
 
-            if($user){
-                // dd(Auth::user()->id);
-            event(new SendMailEvent( $user));
-        }
             return ApiResponse::sendResponse(200, 'Login success', new UserResource($user));
             // dd($user);
         } else {

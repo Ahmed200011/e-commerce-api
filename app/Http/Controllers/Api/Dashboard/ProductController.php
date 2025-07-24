@@ -46,6 +46,9 @@ class ProductController extends Controller
         if ($data == false) {
             return ApiResponse::sendResponse(422,  'fail to register, please try again', $data->errors()->all());
         }
+        // dd($data);
+        // dd($request->all());
+
         if ($request->hasFile('image')) {
             $file = $request->file('image');
             $image_name = uniqid() . '_' . $file->getClientOriginalName();
@@ -92,22 +95,20 @@ class ProductController extends Controller
 
             $this->uploadImage($file, 'dashboard/assets/images/products/cards/', $image_name, 600, 600,);
             $this->uploadImage($file, 'dashboard/assets/images/products/details/', $image_name, 800, 1000);
-        } else {
-            return ApiResponse::sendResponse(422,  'There is no image uploaded', []);
+            if ($product->image) {
+                $this->deleteImage('dashboard/assets/images/products/cards/', $product->image);
+                $this->deleteImage('dashboard/assets/images/products/details/', $product->image);
+            }
         }
 
         // dd($data);
 
-        if ($product->image) {
-            $this->deleteImage('dashboard/assets/images/products/cards/', $product->image);
-            $this->deleteImage('dashboard/assets/images/products/details/', $product->image);
-        }
         $product->update([
-            'product_name' => $data['product_name'],
-            'price' => $data['price'],
-            'description' => $data['description'],
-            'category_id' => $data['category_id'],
-            'image' => isset($image_name) ? $image_name : null
+            'product_name' => $data['product_name']? $data['product_name'] : $product->product_name,
+            'price' => $data['price']? $data['price'] : $product->price,
+            'description' => $data['description']? $data['description'] : $product->description,
+            'category_id' => $data['category_id']? $data['category_id'] : $product->category_id,
+            'image' => isset($image_name) ? $image_name : $product->image
         ]);
         return ApiResponse::sendResponse(200, 'the product updated successfully', new ProductResource($product));
     }
@@ -115,9 +116,12 @@ class ProductController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Product $product)
+    public function destroy($id)
     {
-        // dd($product->image);
+        $product = Product::find($id);
+        if (!$product) {
+            return ApiResponse::sendResponse(404, 'product not found', []);
+        }
         if ($product->image) {
             $this->deleteImage('dashboard/assets/images/products/cards/', $product->image);
             $this->deleteImage('dashboard/assets/images/products/details/', $product->image);

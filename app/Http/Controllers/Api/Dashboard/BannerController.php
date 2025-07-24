@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\Dashboard;
 use App\Helpers\ApiResponse;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Dashboard\BannerResource;
+use App\Http\Resources\Dashboard\ProductResource;
 use App\Models\Banner;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -45,7 +46,7 @@ class BannerController extends Controller
             $file = $request->file('image');
             $image_name = uniqid() . '_' . $file->getClientOriginalName();
 
-            $this->uploadImage($file, 'dashboard/assets/images/banner/', $image_name, 1920,800);
+            $this->uploadImage($file, 'dashboard/assets/images/banner/', $image_name, 1920, 800);
         } else {
             return ApiResponse::sendResponse(422,  'There is no image uploaded', []);
         }
@@ -62,9 +63,15 @@ class BannerController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Banner $banner)
+    public function show($id)
     {
-        //
+                $banner = Banner::find($id);
+
+        if (!$banner) {
+            return ApiResponse::sendResponse(404, 'No product associated with this banner', []);
+        }
+        $product = $banner->product;
+        return ApiResponse::sendResponse(200, 'product retrieved successfully', new ProductResource($product));
     }
 
     /**
@@ -72,19 +79,22 @@ class BannerController extends Controller
      */
     public function update(Request $request, Banner $banner)
     {
+        // dd($request->all());
         $data = Validator::make($request->all(), [
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:5048',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:10048',
             'product_id' => 'exists:products,id',
 
         ]);
-        if ($data == false) {
+        if ($data->fails()) {
             return ApiResponse::sendResponse(422, 'fail to register, please try again', $data->errors()->all());
         }
         if ($request->hasFile('image')) {
             $file = $request->file('image');
             $image_name = uniqid() . '_' . $file->getClientOriginalName();
 
-            $this->uploadImage($file, 'dashboard/assets/images/banner/', $image_name,  1920,800);
+            $this->uploadImage($file, 'dashboard/assets/images/banner/', $image_name,  1920, 800);
+        }else {
+            return ApiResponse::sendResponse(422,  'There is no image uploaded', []);
         }
         if ($banner->image) {
             $this->deleteImage('dashboard/assets/images/banner/', $banner->image);
@@ -101,8 +111,13 @@ class BannerController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Banner $banner)
+    public function destroy($id)
     {
+        $banner = Banner::find($id);
+        if (!$banner) {
+            return ApiResponse::sendResponse(404, 'Banner not found', []);
+        }
+
         if ($banner->image) {
             $this->deleteImage('dashboard/assets/images/banner/', $banner->image);
         }
@@ -111,7 +126,7 @@ class BannerController extends Controller
         if ($deleted) {
             return ApiResponse::sendResponse(200, 'banner deleted successfully', []);
         } else {
-            return ApiResponse::sendResponse(500, 'banner to delete user', []);
+            return ApiResponse::sendResponse(500, 'Failed to delete the banner. Please try again later.', []);
         }
     }
 }

@@ -50,8 +50,12 @@ class UserController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(AddUserRequest $request, User $user)
+    public function update(AddUserRequest $request, $id)
     {
+        $user = User::find($id);
+        if(!$user) {
+            return ApiResponse::sendResponse(404, 'User not found', []);
+        }
         $data = $request->validated();
         // dd($data);
         if ($data) {
@@ -72,8 +76,12 @@ class UserController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(User $user)
+    public function destroy($id)
     {
+        $user = User::find($id);
+        if (!$user) {
+            return ApiResponse::sendResponse(404, 'User not found', []);
+        }
         $deleted = $user->delete();
 
         if ($deleted) {

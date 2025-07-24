@@ -7,10 +7,10 @@ use Illuminate\Database\Eloquent\Model;
 class ContactUs extends Model
 {
     protected $fillable = [
+        'name' ,
         'email',
-        'name',
-        'text',
-        // 'user_id'
+        'subject',
+        'message' ,
     ];
 
     // public function user(){
