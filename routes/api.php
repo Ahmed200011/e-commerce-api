@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\ecommerce\ContactController;
 use App\Http\Controllers\Api\ecommerce\HomeController;
 use App\Http\Controllers\Api\Dashboard\ProductController;
 use App\Http\Controllers\Api\Dashboard\UserController;
+use App\Http\Controllers\Api\ecommerce\ShopController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -35,4 +36,5 @@ Route::prefix('e_commerce')->group(function () {
     });
 
     Route::post('/contact_us', [ContactController::class, 'contactUs']);
+    Route::get('/products/search', [ShopController::class, 'search']);
 });

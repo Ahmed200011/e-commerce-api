@@ -2,31 +2,30 @@
 
 namespace App\Http\Controllers\Api\ecommerce;
 
-use App\Events\ContactUsEvent;
 use App\Helpers\ApiResponse;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\ProductRequest;
 use App\Http\Resources\Dashboard\CategoryResource;
 use App\Http\Resources\Dashboard\ProductResource;
 use App\Models\Banner;
 use App\Models\Category;
-use App\Models\ContactUs;
 use App\Models\Product;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
+use App\Traits\Pagination;
 
 class HomeController extends Controller
 {
+    use Pagination;
+
+
     public function index()
     {
         // $Categories = Category::all();
         $banner = Banner::all();
-        $Products = Product::all();
-        $categories = Category::with([ 'products'])->get();
+        $Products = Product::orderBy('created_at', 'desc')->take(20)->get();;
+        $categories = Category::with(['products'])->get();
 
 
 
-        return ApiResponse::sendResponse(200, 'all date retrieved', ['banner' => $banner, 'categories' =>CategoryResource::collection( $categories), 'products' =>ProductResource::collection( $Products)]);
+        return ApiResponse::sendResponse(200, 'all date retrieved', ['banner' => $banner, 'categories' => CategoryResource::collection($categories), 'products' => ProductResource::collection($Products)]);
     }
     public function bannerShowDetails($id)
     {
@@ -58,7 +57,14 @@ class HomeController extends Controller
         if (!$category) {
             return ApiResponse::sendResponse(404, 'No details associated with this category', []);
         }
-        $product = $category->products;
-        return ApiResponse::sendResponse(200, 'category retrieved successfully',  ProductResource::collection($product));
+        $products = $category->products()->orderBy('id')->cursorPaginate(20);
+        if ($products->isEmpty()) {
+            return ApiResponse::sendResponse(404, 'No products found in this category.', []);
+        }
+        $customData = [
+            'Rows' => ProductResource::collection($products),
+            'pagination' => $this->formatPagination($products)
+        ];
+        return ApiResponse::sendResponse(200, 'products retrieved successfully',  $customData);
     }
 }
