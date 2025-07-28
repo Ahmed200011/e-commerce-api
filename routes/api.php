@@ -3,10 +3,12 @@
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\Dashboard\BannerController;
 use App\Http\Controllers\Api\Dashboard\CategoryController;
+use App\Http\Controllers\Api\ecommerce\CartController;
 use App\Http\Controllers\Api\ecommerce\ContactController;
 use App\Http\Controllers\Api\ecommerce\HomeController;
 use App\Http\Controllers\Api\Dashboard\ProductController;
 use App\Http\Controllers\Api\Dashboard\UserController;
+use App\Http\Controllers\Api\ecommerce\OrderController;
 use App\Http\Controllers\Api\ecommerce\ShopController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -37,4 +39,24 @@ Route::prefix('e_commerce')->group(function () {
 
     Route::post('/contact_us', [ContactController::class, 'contactUs']);
     Route::get('/products/search', [ShopController::class, 'search']);
+
+    Route::prefix('cart')
+        ->middleware('auth:sanctum')
+        ->controller(CartController::class)
+        ->group(function () {
+            Route::post('/add', 'addToCart');
+            Route::get('/', 'viewCart');
+            Route::put('/update/{product_id}', 'updateQuantity');
+            Route::delete('/remove/{product_id}', 'removeFromCart');
+            Route::delete('/clear', 'clearCart');
+        });
+    Route::prefix('order')
+        ->middleware('auth:sanctum')
+        ->controller(OrderController::class)
+        ->group(function () {
+            Route::post('/checkout', 'checkout');
+            Route::get('/my-orders', 'myOrders');
+            Route::post('/pay/{orderId}', 'markAsPaid');
+            Route::delete('/cancel/{orderId}', 'OrderCancel');
+        });
 });

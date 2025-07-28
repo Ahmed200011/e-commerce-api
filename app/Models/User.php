@@ -50,7 +50,8 @@ class User extends Authenticatable implements LaratrustUser
             'password' => 'hashed',
         ];
     }
-    // public function contactUs(){
-    //     return $this->hasMany(ContactUs::class,'user_id','id');
-    // }
+  public function cartItems() {
+    return $this->hasMany(CartItem::class);
+}
+
 }

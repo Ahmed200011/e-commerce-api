@@ -22,4 +22,8 @@ class Product extends Model
     {
         return $this->hasMany(Banner::class, 'product_id', 'id');
     }
+  public function cartItems() {
+    return $this->hasMany(CartItem::class);
+}
+
 }
