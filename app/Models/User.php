@@ -25,6 +25,7 @@ class User extends Authenticatable implements LaratrustUser
         'name',
         'email',
         'password',
+        'phone',
     ];
 
     /**
@@ -49,4 +50,8 @@ class User extends Authenticatable implements LaratrustUser
             'password' => 'hashed',
         ];
     }
+  public function cartItems() {
+    return $this->hasMany(CartItem::class);
+}
+
 }

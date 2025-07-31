@@ -1,0 +1,1390 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "E-commerce API Documentation",
+        "description": "Swagger Docs for Dashboard APIs (Admin Panel)",
+        "contact": {
+            "name": "API Support",
+            "email": "admin@example.com"
+        },
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://my-default-host.com",
+            "description": "Local server"
+        }
+    ],
+    "paths": {
+        "/register": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Register a new user",
+                "operationId": "5d4fa5d5607ed675ba93907e1fc94534",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "email",
+                                    "password",
+                                    "phone"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Ahmed Rizk"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "ahmed@example.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "12345678"
+                                    },
+                                    "phone": {
+                                        "type": "string",
+                                        "example": "01009198079"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "User registered successfully"
+                    },
+                    "422": {
+                        "description": "Validation failed"
+                    }
+                }
+            }
+        },
+        "/login": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Login and get token",
+                "operationId": "67d6d0fdd54fba132e1b6f55ca254183",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "ahmed@example.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "12345678"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Login successful"
+                    },
+                    "401": {
+                        "description": "Unauthorized - wrong credentials"
+                    }
+                }
+            }
+        },
+        "/logout": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Logout current user",
+                "operationId": "28d48c13fca984400ac8de99f54ee13a",
+                "responses": {
+                    "200": {
+                        "description": "Logout successful"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/dashboard/banner": {
+            "get": {
+                "tags": [
+                    "Dashboard - Banner"
+                ],
+                "summary": "List all banners with their products",
+                "operationId": "9791d49bc59c45e3e28edc51f144f0a7",
+                "responses": {
+                    "200": {
+                        "description": "All banners retrieved successfully"
+                    },
+                    "400": {
+                        "description": "No banners found"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Dashboard - Banner"
+                ],
+                "summary": "Create new banner",
+                "operationId": "da3acd12b0ec923f179fa0599021528b",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "image"
+                                ],
+                                "properties": {
+                                    "image": {
+                                        "type": "file",
+                                        "format": "binary"
+                                    },
+                                    "product_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Banner created successfully"
+                    },
+                    "422": {
+                        "description": "Validation error or no image uploaded"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/dashboard/banner/{id}": {
+            "get": {
+                "tags": [
+                    "Dashboard - Banner"
+                ],
+                "summary": "Get the product associated with a specific banner",
+                "operationId": "74f3dfa52e322892f3e3ed030c72328e",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Banner ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Product retrieved successfully"
+                    },
+                    "404": {
+                        "description": "Banner not found"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Dashboard - Banner"
+                ],
+                "summary": "Update a banner",
+                "operationId": "cdfdff2a0ec516659b7adebbe857236b",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Banner ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "image"
+                                ],
+                                "properties": {
+                                    "image": {
+                                        "type": "file",
+                                        "format": "binary"
+                                    },
+                                    "product_id": {
+                                        "type": "integer",
+                                        "example": 2
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Banner updated successfully"
+                    },
+                    "422": {
+                        "description": "Validation failed or no image uploaded"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Dashboard - Banner"
+                ],
+                "summary": "Delete a banner",
+                "operationId": "19314564ca5a760948a11f685233f7b2",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Banner ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Banner deleted successfully"
+                    },
+                    "404": {
+                        "description": "Banner not found"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/dashboard/categories": {
+            "get": {
+                "tags": [
+                    "Dashboard - Category"
+                ],
+                "summary": "Get all categories with parent, children, and products",
+                "operationId": "af660ed6d857e57ed0802fd2ecc85b02",
+                "responses": {
+                    "200": {
+                        "description": "All categories retrieved successfully"
+                    },
+                    "400": {
+                        "description": "No categories found"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Dashboard - Category"
+                ],
+                "summary": "Create a new category",
+                "operationId": "9ae4c7df23791e27e6711549eb73b073",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "category_name"
+                                ],
+                                "properties": {
+                                    "category_name": {
+                                        "type": "string",
+                                        "example": "Laptops"
+                                    },
+                                    "parent_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Category added successfully"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/dashboard/categories/{id}": {
+            "put": {
+                "tags": [
+                    "Dashboard - Category"
+                ],
+                "summary": "Update an existing category",
+                "operationId": "3b307b6ed0699e93ab97c6ddbf10a664",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Category ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "category_name"
+                                ],
+                                "properties": {
+                                    "category_name": {
+                                        "type": "string",
+                                        "example": "Phones"
+                                    },
+                                    "parent_id": {
+                                        "type": "integer",
+                                        "example": 2
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Category updated successfully"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Dashboard - Category"
+                ],
+                "summary": "Delete a category by ID",
+                "operationId": "83c4232afcdc2f365df0798caa15a018",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Category ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Category deleted successfully"
+                    },
+                    "404": {
+                        "description": "Category not found"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/dashboard/products": {
+            "get": {
+                "tags": [
+                    "Dashboard - Product"
+                ],
+                "summary": "Get all products with category and pagination",
+                "operationId": "6481e98f63350a26907aace97aade7ae",
+                "responses": {
+                    "200": {
+                        "description": "All products retrieved with pagination"
+                    },
+                    "400": {
+                        "description": "No products found"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Dashboard - Product"
+                ],
+                "summary": "Create a new product",
+                "operationId": "ae6c45e253cdbe3f31e9d3a3a8eaf6cf",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "product_name",
+                                    "price",
+                                    "description",
+                                    "category_id",
+                                    "image"
+                                ],
+                                "properties": {
+                                    "product_name": {
+                                        "type": "string",
+                                        "example": "iPhone 14"
+                                    },
+                                    "price": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": 999.99
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "Latest Apple phone"
+                                    },
+                                    "category_id": {
+                                        "type": "integer",
+                                        "example": 3
+                                    },
+                                    "image": {
+                                        "type": "file",
+                                        "format": "binary"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Product created successfully"
+                    },
+                    "422": {
+                        "description": "Validation failed or image missing"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/dashboard/products/{id}": {
+            "get": {
+                "tags": [
+                    "Dashboard - Product"
+                ],
+                "summary": "Get a single product by ID",
+                "operationId": "36e509e84ba147431a94b601d521b692",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Product ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Product retrieved successfully"
+                    },
+                    "404": {
+                        "description": "Product not found"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Dashboard - Product"
+                ],
+                "summary": "Update an existing product",
+                "operationId": "14670ca7abfab96c36775fc87ff43e25",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Product ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "product_name": {
+                                        "type": "string",
+                                        "example": "iPhone 15"
+                                    },
+                                    "price": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": 1099.99
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "Updated phone"
+                                    },
+                                    "category_id": {
+                                        "type": "integer",
+                                        "example": 4
+                                    },
+                                    "image": {
+                                        "type": "file",
+                                        "format": "binary"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Product updated successfully"
+                    },
+                    "422": {
+                        "description": "Validation failed"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Dashboard - Product"
+                ],
+                "summary": "Delete a product by ID",
+                "operationId": "a71183f1e44533721d599a207081ecf9",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Product ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Product deleted successfully"
+                    },
+                    "404": {
+                        "description": "Product not found"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/dashboard/users": {
+            "get": {
+                "tags": [
+                    "Dashboard - User"
+                ],
+                "summary": "Get list of all users with their roles",
+                "operationId": "ea5581dab755b8b513ac8537b37f91e6",
+                "responses": {
+                    "200": {
+                        "description": "Users retrieved successfully"
+                    },
+                    "404": {
+                        "description": "No users found"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Dashboard - User"
+                ],
+                "summary": "Register a new user with a role",
+                "operationId": "34181931b00c12efc896c39be768cc21",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "email",
+                                    "password",
+                                    "phone",
+                                    "role"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Ahmed Rizk"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "ahmed@example.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "12345678"
+                                    },
+                                    "phone": {
+                                        "type": "string",
+                                        "example": "01009198079"
+                                    },
+                                    "role": {
+                                        "type": "string",
+                                        "example": "admin"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "User registered successfully"
+                    },
+                    "422": {
+                        "description": "Validation failed"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/dashboard/users/{id}": {
+            "put": {
+                "tags": [
+                    "Dashboard - User"
+                ],
+                "summary": "Update user data and role",
+                "operationId": "fe61b08774e4a9fe1b266b535593738b",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "User ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Ahmed Updated"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "example": "updated@example.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "example": "newpassword"
+                                    },
+                                    "phone": {
+                                        "type": "string",
+                                        "example": "01000000000"
+                                    },
+                                    "role": {
+                                        "type": "string",
+                                        "example": "editor"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "User updated successfully"
+                    },
+                    "404": {
+                        "description": "User not found"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Dashboard - User"
+                ],
+                "summary": "Delete user by ID",
+                "operationId": "d583a1dc13293e101a7de88418653107",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "User ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User deleted successfully"
+                    },
+                    "404": {
+                        "description": "User not found"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/e_commerce/cart/add": {
+            "post": {
+                "tags": [
+                    "E-Commerce - Cart"
+                ],
+                "summary": "Add a product to cart",
+                "operationId": "645baf1e244f8014dd25e81acac15ec3",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "product_id",
+                                    "quantity"
+                                ],
+                                "properties": {
+                                    "product_id": {
+                                        "type": "integer",
+                                        "example": 5
+                                    },
+                                    "quantity": {
+                                        "type": "integer",
+                                        "example": 2
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Added to cart successfully"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/e_commerce/cart": {
+            "get": {
+                "tags": [
+                    "E-Commerce - Cart"
+                ],
+                "summary": "View items in cart",
+                "operationId": "55c156b73aebd538bbc562d3d82e5711",
+                "responses": {
+                    "200": {
+                        "description": "Cart contents retrieved"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/e_commerce/cart/update/{product_id}": {
+            "put": {
+                "tags": [
+                    "E-Commerce - Cart"
+                ],
+                "summary": "Update quantity for a cart item",
+                "operationId": "706d6963c7257c82c8d2d3b6700ccc24",
+                "parameters": [
+                    {
+                        "name": "product_id",
+                        "in": "path",
+                        "description": "Product ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "quantity"
+                                ],
+                                "properties": {
+                                    "quantity": {
+                                        "type": "integer",
+                                        "example": 3
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Quantity updated successfully"
+                    },
+                    "422": {
+                        "description": "Validation failed"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/e_commerce/cart/remove/{product_id}": {
+            "delete": {
+                "tags": [
+                    "E-Commerce - Cart"
+                ],
+                "summary": "Remove product from cart",
+                "operationId": "f0f5b8c6538d11f868f5abc6448d4ee5",
+                "parameters": [
+                    {
+                        "name": "product_id",
+                        "in": "path",
+                        "description": "Product ID to remove",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Item removed from cart"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/e_commerce/cart/clear": {
+            "delete": {
+                "tags": [
+                    "E-Commerce - Cart"
+                ],
+                "summary": "Clear entire cart",
+                "operationId": "8ab1ee088a193d0293dcc814d052ea9a",
+                "responses": {
+                    "200": {
+                        "description": "Cart cleared successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/e_commerce/contact_us": {
+            "post": {
+                "tags": [
+                    "E-Commerce - Contact Us"
+                ],
+                "summary": "Send a contact us message",
+                "operationId": "4cd3cd06fc144ef41ee8feaa031ee5c8",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "email",
+                                    "message"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Ahmed Mohamed"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "ahmed@example.com"
+                                    },
+                                    "subject": {
+                                        "type": "string",
+                                        "example": "Support request"
+                                    },
+                                    "message": {
+                                        "type": "string",
+                                        "example": "I have an issue with my order..."
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Your message is sent"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                }
+            }
+        },
+        "/e_commerce/home": {
+            "get": {
+                "tags": [
+                    "E-Commerce - Home"
+                ],
+                "summary": "Homepage data: banners, categories, products",
+                "operationId": "311efd609cba160890f5951a77716a17",
+                "responses": {
+                    "200": {
+                        "description": "Homepage content retrieved"
+                    }
+                }
+            }
+        },
+        "/e_commerce/banner/{id}": {
+            "get": {
+                "tags": [
+                    "E-Commerce - Home"
+                ],
+                "summary": "Get product associated with a specific banner",
+                "operationId": "d7fbb10e4e8d1a9a71d21751e24749d6",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Banner ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 3
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Product retrieved successfully"
+                    },
+                    "404": {
+                        "description": "Banner or product not found"
+                    }
+                }
+            }
+        },
+        "/e_commerce/product/{id}": {
+            "get": {
+                "tags": [
+                    "E-Commerce - Home"
+                ],
+                "summary": "Get product details by ID",
+                "operationId": "5db0595ceb8cf82f9620699388311028",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Product ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 5
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Product retrieved successfully"
+                    },
+                    "404": {
+                        "description": "Product not found"
+                    }
+                }
+            }
+        },
+        "/e_commerce/category/{id}": {
+            "get": {
+                "tags": [
+                    "E-Commerce - Home"
+                ],
+                "summary": "Get products of a specific category",
+                "operationId": "885c8a8d9a30fa936643e3f83a7647dc",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Category ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 2
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Products in category retrieved"
+                    },
+                    "404": {
+                        "description": "Category or products not found"
+                    }
+                }
+            }
+        },
+        "/e_commerce/order/checkout": {
+            "post": {
+                "tags": [
+                    "E-Commerce - Orders"
+                ],
+                "summary": "Checkout and create an order",
+                "operationId": "308a52f6dfb193ca50fa0a063e4ec107",
+                "responses": {
+                    "200": {
+                        "description": "Order created and payment link returned"
+                    },
+                    "400": {
+                        "description": "Cart is empty"
+                    },
+                    "500": {
+                        "description": "Checkout failed"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/e_commerce/callBack": {
+            "post": {
+                "tags": [
+                    "E-Commerce - Orders"
+                ],
+                "summary": "Paymob callback to confirm payment",
+                "operationId": "0372b70877ab50f2cdcb5713ffb93911",
+                "requestBody": {
+                    "description": "Paymob callback payload",
+                    "required": false,
+                    "content": {
+                        "application/json": {
+                            "schema": {}
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Payment result received"
+                    }
+                }
+            }
+        },
+        "/e_commerce/order/pay/{orderId}": {
+            "post": {
+                "tags": [
+                    "E-Commerce - Orders"
+                ],
+                "summary": "Mark an order as paid",
+                "operationId": "0dd6feac283a288742699942b1f7c4a1",
+                "parameters": [
+                    {
+                        "name": "orderId",
+                        "in": "path",
+                        "description": "Order ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 10
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Order marked as paid"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/e_commerce/order/my-orders": {
+            "get": {
+                "tags": [
+                    "E-Commerce - Orders"
+                ],
+                "summary": "Get authenticated user's orders",
+                "operationId": "5759c6adf0b8f6b06cdeeeaa1f532d80",
+                "responses": {
+                    "200": {
+                        "description": "List of user's orders"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/e_commerce/order/cancel/{orderId}": {
+            "delete": {
+                "tags": [
+                    "E-Commerce - Orders"
+                ],
+                "summary": "Cancel an order",
+                "operationId": "6a44d7ab5c079c1d8ad4b7a7078009b9",
+                "parameters": [
+                    {
+                        "name": "orderId",
+                        "in": "path",
+                        "description": "Order ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 5
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Order cancelled successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/e_commerce/products/search": {
+            "get": {
+                "tags": [
+                    "E-Commerce - Shop"
+                ],
+                "summary": "Search for products by name or category",
+                "operationId": "dbb0d1f0f6b2f8a93d6e605b5e6c6134",
+                "parameters": [
+                    {
+                        "name": "query",
+                        "in": "query",
+                        "description": "Search by product name",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "iphone"
+                        }
+                    },
+                    {
+                        "name": "category",
+                        "in": "query",
+                        "description": "Filter by category name",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "electronics"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Matching products retrieved successfully"
+                    },
+                    "404": {
+                        "description": "No matching products found"
+                    }
+                }
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Authentication",
+            "description": "Authentication"
+        },
+        {
+            "name": "Dashboard - Banner",
+            "description": "Dashboard - Banner"
+        },
+        {
+            "name": "Dashboard - Category",
+            "description": "Dashboard - Category"
+        },
+        {
+            "name": "Dashboard - Product",
+            "description": "Dashboard - Product"
+        },
+        {
+            "name": "Dashboard - User",
+            "description": "Dashboard - User"
+        },
+        {
+            "name": "E-Commerce - Cart",
+            "description": "E-Commerce - Cart"
+        },
+        {
+            "name": "E-Commerce - Contact Us",
+            "description": "E-Commerce - Contact Us"
+        },
+        {
+            "name": "E-Commerce - Home",
+            "description": "E-Commerce - Home"
+        },
+        {
+            "name": "E-Commerce - Orders",
+            "description": "E-Commerce - Orders"
+        },
+        {
+            "name": "E-Commerce - Shop",
+            "description": "E-Commerce - Shop"
+        }
+    ]
+}
