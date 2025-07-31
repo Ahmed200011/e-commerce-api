@@ -8,10 +8,43 @@ use App\Http\Resources\Dashboard\ProductResource;
 use App\Models\Product;
 use App\Traits\Pagination;
 use Illuminate\Http\Request;
+use OpenApi\Annotations as OA;
+
 
 class ShopController extends Controller
 {
     use Pagination;
+
+    /**
+ * @OA\Get(
+ *     path="/e_commerce/products/search",
+ *     tags={"E-Commerce - Shop"},
+ *     summary="Search for products by name or category",
+ *     @OA\Parameter(
+ *         name="query",
+ *         in="query",
+ *         required=false,
+ *         description="Search by product name",
+ *         @OA\Schema(type="string", example="iphone")
+ *     ),
+ *     @OA\Parameter(
+ *         name="category",
+ *         in="query",
+ *         required=false,
+ *         description="Filter by category name",
+ *         @OA\Schema(type="string", example="electronics")
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Matching products retrieved successfully"
+ *     ),
+ *     @OA\Response(
+ *         response=404,
+ *         description="No matching products found"
+ *     )
+ * )
+ */
+
 
     public function search(Request $request)
     {

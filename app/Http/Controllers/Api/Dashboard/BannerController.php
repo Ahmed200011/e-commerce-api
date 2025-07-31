@@ -10,15 +10,34 @@ use App\Models\Banner;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Traits\UploadImageTrait;
+use OpenApi\Annotations as OA;
 
 
 class BannerController extends Controller
 {
+
     use UploadImageTrait;
 
     /**
      * Display a listing of the resource.
      */
+    /**
+ * @OA\Get(
+ *     path="/dashboard/banner",
+ *     tags={"Dashboard - Banner"},
+ *     summary="List all banners with their products",
+ *     security={{"sanctum":{}}},
+ *     @OA\Response(
+ *         response=200,
+ *         description="All banners retrieved successfully"
+ *     ),
+ *     @OA\Response(
+ *         response=400,
+ *         description="No banners found"
+ *     )
+ * )
+ */
+
     public function index()
     {
         $banner = Banner::with('product')->get();
@@ -32,6 +51,35 @@ class BannerController extends Controller
     /**
      * Store a newly created resource in storage.
      */
+
+    /**
+ * @OA\Post(
+ *     path="/dashboard/banner",
+ *     tags={"Dashboard - Banner"},
+ *     summary="Create new banner",
+ *     security={{"sanctum":{}}},
+ *     @OA\RequestBody(
+ *         required=true,
+ *         @OA\MediaType(
+ *             mediaType="multipart/form-data",
+ *             @OA\Schema(
+ *                 required={"image"},
+ *                 @OA\Property(property="image", type="file", format="binary"),
+ *                 @OA\Property(property="product_id", type="integer", example=1)
+ *             )
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Banner created successfully"
+ *     ),
+ *     @OA\Response(
+ *         response=422,
+ *         description="Validation error or no image uploaded"
+ *     )
+ * )
+ */
+
     public function store(Request $request)
     {
         $data = Validator::make($request->all(), [
@@ -63,6 +111,31 @@ class BannerController extends Controller
     /**
      * Display the specified resource.
      */
+
+    /**
+ * @OA\Get(
+ *     path="/dashboard/banner/{id}",
+ *     tags={"Dashboard - Banner"},
+ *     summary="Get the product associated with a specific banner",
+ *     security={{"sanctum":{}}},
+ *     @OA\Parameter(
+ *         name="id",
+ *         in="path",
+ *         required=true,
+ *         description="Banner ID",
+ *         @OA\Schema(type="integer")
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Product retrieved successfully"
+ *     ),
+ *     @OA\Response(
+ *         response=404,
+ *         description="Banner not found"
+ *     )
+ * )
+ */
+
     public function show($id)
     {
                 $banner = Banner::find($id);
@@ -77,6 +150,42 @@ class BannerController extends Controller
     /**
      * Update the specified resource in storage.
      */
+
+    /**
+ * @OA\Put(
+ *     path="/dashboard/banner/{id}",
+ *     tags={"Dashboard - Banner"},
+ *     summary="Update a banner",
+ *     security={{"sanctum":{}}},
+ *     @OA\Parameter(
+ *         name="id",
+ *         in="path",
+ *         required=true,
+ *         description="Banner ID",
+ *         @OA\Schema(type="integer")
+ *     ),
+ *     @OA\RequestBody(
+ *         required=true,
+ *         @OA\MediaType(
+ *             mediaType="multipart/form-data",
+ *             @OA\Schema(
+ *                 required={"image"},
+ *                 @OA\Property(property="image", type="file", format="binary"),
+ *                 @OA\Property(property="product_id", type="integer", example=2)
+ *             )
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Banner updated successfully"
+ *     ),
+ *     @OA\Response(
+ *         response=422,
+ *         description="Validation failed or no image uploaded"
+ *     )
+ * )
+ */
+
     public function update(Request $request, Banner $banner)
     {
         // dd($request->all());
@@ -111,6 +220,31 @@ class BannerController extends Controller
     /**
      * Remove the specified resource from storage.
      */
+
+    /**
+ * @OA\Delete(
+ *     path="/dashboard/banner/{id}",
+ *     tags={"Dashboard - Banner"},
+ *     summary="Delete a banner",
+ *     security={{"sanctum":{}}},
+ *     @OA\Parameter(
+ *         name="id",
+ *         in="path",
+ *         required=true,
+ *         description="Banner ID",
+ *         @OA\Schema(type="integer")
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Banner deleted successfully"
+ *     ),
+ *     @OA\Response(
+ *         response=404,
+ *         description="Banner not found"
+ *     )
+ * )
+ */
+
     public function destroy($id)
     {
         $banner = Banner::find($id);

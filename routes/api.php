@@ -55,8 +55,9 @@ Route::prefix('e_commerce')->group(function () {
         ->controller(OrderController::class)
         ->group(function () {
             Route::post('/checkout', 'checkout');
-            Route::get('/my-orders', 'myOrders');
             Route::post('/pay/{orderId}', 'markAsPaid');
+            Route::get('/my-orders', 'myOrders');
             Route::delete('/cancel/{orderId}', 'OrderCancel');
         });
+        Route::match(['GET','POST'],'/callBack', [OrderController::class, 'callBack']);
 });
